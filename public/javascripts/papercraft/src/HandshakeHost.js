@@ -1,6 +1,6 @@
 Engine.include("/engine/engine.baseobject.js");
 
-Game.load(pathToEngine + "/papercraft/Player.js");
+Game.load(pathToEngine + "/src/Player.js");
 	
 Engine.initObject("HandshakeHost", "BaseObject", function() {
 	

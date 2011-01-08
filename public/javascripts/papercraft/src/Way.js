@@ -3,7 +3,7 @@ Engine.include("/engine/engine.baseobject.js");
 // Load the timers
 Engine.include("/engine/engine.timers.js");
 
-Game.load(pathToEngine + "/papercraft/Platform.js");
+Game.load(pathToEngine + "/src/Platform.js");
 
 Engine.initObject("Way", "BaseObject", function() {
 

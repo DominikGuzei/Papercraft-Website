@@ -1,7 +1,7 @@
 // Load the components and engine objects
 Engine.include("/engine/engine.baseobject.js");
 
-Game.load(pathToEngine + "/papercraft/Way.js");
+Game.load(pathToEngine + "/src/Way.js");
 
 Engine.initObject("Level", "BaseObject", function() {
 

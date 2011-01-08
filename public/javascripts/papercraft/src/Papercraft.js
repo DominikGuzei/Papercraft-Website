@@ -4,9 +4,9 @@ Engine.include("/spatial/container.spatialgrid.js");
 Engine.include("/resourceloaders/loader.sprite.js");
 Engine.include("/engine/engine.timers.js");
 
-Game.load(pathToEngine + "/papercraft/Level.js");
-Game.load(pathToEngine + "/papercraft/Player.js");
-Game.load(pathToEngine + "/papercraft/HandshakeHost.js");
+Game.load(pathToEngine + "/src/Level.js");
+Game.load(pathToEngine + "/src/Player.js");
+Game.load(pathToEngine + "/src/HandshakeHost.js");
 
 Engine.initObject("Papercraft", "Game", function(){
 

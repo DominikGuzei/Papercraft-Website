@@ -2,7 +2,7 @@
 Engine.include("/components/component.collider.js");
 Engine.include("/components/component.boxcollider.js");
 
-Game.load(pathToEngine + "/papercraft/GameObject.js");
+Game.load(pathToEngine + "/src/GameObject.js");
 
 Engine.initObject("Platform", "GameObject", function() {
 
