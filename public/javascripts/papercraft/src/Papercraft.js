@@ -44,11 +44,11 @@ Engine.initObject("Papercraft", "Game", function(){
 			playerTypes: [
 				{
 					type: "Robin",
-					image: pathWithoutSlash + "/papercraft/resources/Robin.jpg"
+					image: pathWithoutSlash + "/src/resources/Robin.jpg"
 				},
 				{
 					type: "Robine",
-					image: pathWithoutSlash + "/papercraft/resources/Robine.jpg"
+					image: pathWithoutSlash + "/src/resources/Robine.jpg"
 				},
 			],
 
@@ -63,8 +63,8 @@ Engine.initObject("Papercraft", "Game", function(){
 				this.spriteLoader = SpriteLoader.create();
          
         // Load the sprites
-        this.spriteLoader.load("platform", this.getFilePath(pathWithoutSlash + "/papercraft/resources/platform.sprite"));
-        this.spriteLoader.load("players", this.getFilePath(pathWithoutSlash + "/papercraft/resources/players.sprite"));
+        this.spriteLoader.load("platform", this.getFilePath(pathWithoutSlash + "/src/resources/platform.sprite"));
+        this.spriteLoader.load("players", this.getFilePath(pathWithoutSlash + "/src/resources/players.sprite"));
 
         // Don't start until all of the resources are loaded
         Timeout.create("wait", 250, function() {
