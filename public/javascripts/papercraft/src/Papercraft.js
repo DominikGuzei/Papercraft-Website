@@ -31,6 +31,8 @@ Engine.initObject("Papercraft", "Game", function(){
 			handshakeHost: null,
 			paused: false,
 			currentLevel: null,
+			gameSeconds: 30,
+			restartSeconds: 5,
 
       // The play field
       fieldBox: null,
@@ -51,6 +53,8 @@ Engine.initObject("Papercraft", "Game", function(){
 					image: pathWithoutSlash + "/src/resources/Robine.jpg"
 				},
 			],
+			
+			players: [],
 
       /**
        * Called to set up the game, download any resources, and initialize
@@ -97,15 +101,17 @@ Engine.initObject("Papercraft", "Game", function(){
 				this.setupLevel();
 				
 				$("#loading").remove();
+				$("#howtoconnect").css("display", "block");
+				var self = this;
+				$("#startGame").click(function() {
+					self.startLevel();
+				});
 			},
 			
 			addPlayer: function(client) {
 				client.player = Player.create(client.name, client.playerType.type, 
 																	 this.playerSize, this.playerSize, 
 																	 this.playerJumpHeight, this.playerMaxSideMovement);
-        this.renderContext.add(client.player);
-				client.player.setPosition( Point2D.create(this.fieldWidth / 2, this.fieldHeight / 2) );
-				this.startLevel();
 			},
 			
 			removePlayer: function(client) {
@@ -121,13 +127,86 @@ Engine.initObject("Papercraft", "Game", function(){
 			startLevel: function() {
 				if(this.currentLevel) {
 					this.currentLevel.start();
+					var self = this;
+					
+					Timeout.create("spawnPlayers", 5000, function() {
+						for(var clientString in self.handshakeHost.host.clientList) if(self.handshakeHost.host.clientList.hasOwnProperty(clientString)) {
+							var client = self.handshakeHost.host.clientList[clientString];
+							self.renderContext.add(client.player);
+							client.player.setPosition( Point2D.create(self.fieldWidth / 2, self.fieldHeight / 2) );
+							client.player.burn();
+							client.player.points = 0;
+						}
+					});
+					
+					$("#howtoconnect").css("display", "none");
+					
+					var seconds = 0;
+					Timeout.create("gameTime", 1000, function() {
+						seconds++;
+						if (seconds > self.gameSeconds) {
+							self.endLevel();
+							self.restartLevel();
+							this.destroy();
+						}
+						else {
+							$("#gameSeconds").html(self.gameSeconds - seconds + " seconds left");
+							this.restart();
+						}
+	        });
 				}
+			},
+			
+			restartLevel: function() {
+					var seconds = 0;
+					var self = this;
+					self.showScores();
+					Timeout.create("restartTime", 1000, function() {
+						seconds++;
+						if (seconds > self.restartSeconds) {
+							self.hideScores();
+							self.startLevel();
+							this.destroy();
+						}
+						else {
+							$("#gameSeconds").html(self.restartSeconds - seconds + " to next game");
+							this.restart();
+						}
+					});
 			},
 			
 			endLevel: function() {
 				if(this.currentLevel) {
 					this.currentLevel.end();
+					for(var clientString in this.handshakeHost.host.clientList) if(this.handshakeHost.host.clientList.hasOwnProperty(clientString)) {
+						var client = this.handshakeHost.host.clientList[clientString];
+						this.renderContext.remove(client.player);
+					}
 				}
+			},
+			
+			showScores: function() {
+				var clients = this.handshakeHost.host.clientList;
+				var sortedByPoints = [];
+				for(var clientString in clients) if(clients.hasOwnProperty(clientString)) {
+					sortedByPoints.push(clients[clientString]);
+				}
+				
+				sortedByPoints.sort(function(a, b) {
+					return a.player.points < b.player.points ? 1 : -1;
+				});
+				var playerScores = "<ol>";
+				for(var i = 0; i < sortedByPoints.length; i++) {
+					playerScores += '<li class="playerScore"><strong>' + sortedByPoints[i].name + "</strong> has " + sortedByPoints[i].player.points + ' points</li>';
+				}
+				playerScores += "</ol>";
+				$("#scores").html(playerScores);
+				$("#scores").show();
+			},
+			
+			hideScores: function() {
+				$("#scores").html("");
+				$("#scores").hide();
 			},
 			
 			pause: function(flag) {

@@ -10,7 +10,6 @@ Engine.initObject("HandshakeHost", "BaseObject", function() {
 		port: 8008,
 		id: undefined,
 		host: null,
-		clients: {},
 		
 		constructor: function() {
 			self = this;
@@ -22,6 +21,7 @@ Engine.initObject("HandshakeHost", "BaseObject", function() {
 				self.host.on("ready", function(hostId) {
 					self.id = hostId;
 					console.log("host id", self.id);
+					$("#gameid").html(self.id);
 				});
 				
 				self.host.on("closed", function(event) {
@@ -34,6 +34,8 @@ Engine.initObject("HandshakeHost", "BaseObject", function() {
 
 				self.host.on("clientDisconnect", function(client) {
 					console.log("client " + client.id + " disconnected");
+					Papercraft.removePlayer(client);
+					self.host.removeClient(client.id);
 				});
 
 				self.host.on("name", function(event) {
@@ -41,9 +43,7 @@ Engine.initObject("HandshakeHost", "BaseObject", function() {
 					client.name = event.data.name;
 					console.log("client connected with name ", event.data.name);
 					client.send("playerTypes", { playerTypes: Papercraft.playerTypes });
-					
 				});
-				
 				
 				self.host.on("playerType", function(event) {
 					var client = self.host.getClient(event.sender);
