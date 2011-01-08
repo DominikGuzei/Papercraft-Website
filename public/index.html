@@ -1,0 +1,46 @@
+<!-- ChromeFrame Support -->
+<meta http-equiv="X-UA-Compatible" content="IE=9;chrome=1"/>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+   <head>
+      <title>Papercraft</title>
+			
+			<link rel="stylesheet" type="text/css" href="stylesheets/decoration.css" media="screen">
+			
+			<!-- FlashCanvas for older IE -->
+			<!--[if lt IE 9]>
+			<script type="text/javascript" src="papercraft/libs/flashcanvas.js"></script>
+			<![endif]-->
+			
+			<script type="text/javascript" src="javascripts/require.js"></script>
+			
+      <!-- Load the supporting libraries -->
+      <script type="text/javascript" src="papercraft/libs/base.js"></script>
+      <script type="text/javascript" src="papercraft/libs/jquery.js"></script>
+      <script type="text/javascript" src="papercraft/libs/jquery.ext.engine.js"></script>
+      <script type="text/javascript" src="papercraft/libs/sylvester.js"></script>
+
+      <!-- Load the main engine script -->
+      <script type="text/javascript" src="papercraft/engine/runtime/engine.js"></script>
+
+   </head>
+   <body>
+		<div id="sun"></div>
+		<div id="clouds"></div>
+		<div id="sky"></div>
+		<div id="frame"></div>
+		<div id="playerTray">
+			
+		</div>
+       <script type="text/javascript">
+				var pathToEngine = "/papercraft";
+				var pathWithoutSlash = "papercraft";
+       	$(document).ready(function() {
+	         // Load the game's script
+	         Engine.loadGame('papercraft/papercraft/Papercraft.js','Papercraft','Papercraft');
+				});
+      </script>
+   </body>
+</html>

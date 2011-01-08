@@ -1,0 +1,2 @@
+module HandshakeHelper
+end

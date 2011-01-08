@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    
+    <title>CSS VFX Example - 3D Coverflow | Flickr</title>
+    
+    <link rel="stylesheet" type="text/css" href="../vfx/zflow/zflow.css" />
+
+    <style type="text/css">
+
+    body
+    {
+        background-color: black;
+        color: white;
+        margin: 0;
+        padding: 0;
+        font-family: Helvetica;
+    }
+
+    .portrait { position: absolute; width: 100%; height: 100%; }
+
+    </style>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/javascript" src="../vfx/zflow/zflow.js"></script>
+</head>
+
+<body class="zflow">
+
+<div class="centering portrait">
+    <div id="tray" class="tray"></div>
+</div>
+
+<script type="text/javascript">
+
+jQuery(window).load(function ()
+{
+    flickr(function (images)
+    {
+        zflow(images, "#tray");
+    });
+});
+
+function flickr(callback)
+{
+    var url = "http://api.flickr.com/services/rest/?method=flickr.interestingness.getList&api_key=60746a125b4a901f2dbb6fc902d9a716&per_page=20&format=json&jsoncallback=?";
+    
+	jQuery.getJSON(url, function(data) 
+	{
+        var images = jQuery.map(data.photos.photo, function (item)
+        {
+            return 'http://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + item.id + '_' + item.secret + '_m.jpg';
+        });
+
+        callback(images);
+    });
+}
+
+</script>
+
+</body>
+</html>

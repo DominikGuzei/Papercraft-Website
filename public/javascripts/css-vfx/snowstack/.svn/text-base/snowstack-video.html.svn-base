@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<!--
+    Copyright (C) 2009 Charles Ying. All Rights Reserved.
+    This source code is available under Apache License 2.0.
+    
+    TODO: 
+    	divide wall into years or topics
+    	add video controller
+    	re-highlight videos when search field is cleared
+    	don't show speaker or date when the demo isn't TED (clean up flickering)
+-->
+
+<title>Snow Stack - WebKit 3D CSS Visual Effects</title>
+<meta name="Description" content="Snow Stack is a demo of WebKit CSS 3D visual effects with latest WebKit nightly on Mac OS X Snow Leopard" />
+
+<link rel="stylesheet" type="text/css" href="snowstack.css">
+
+<style type="text/css">
+
+body
+{
+	font-family: 'Helvetica Neue Light', 'HelveticaNeue-Light', sans-serif;
+	background-color: black;
+	color: white;
+	margin: 0;
+	padding: 0;
+}
+
+div.bgfx
+{
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.65, rgba(0, 0, 0, 0)), color-stop(1.0, rgba(50,50,50, 1)));
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.caption
+{
+	position: absolute;
+	bottom: 0; right: 0; left: 0;
+	font-size: 15pt;
+	text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
+	padding: 10pt 10pt 10pt 20pt;
+	-webkit-transform: translate3d(0, 0, 2000px);
+	background-color: rgba(0, 0, 0, 0.5);
+	-webkit-transition-property: opacity;
+	-webkit-transition-duration: 550ms;
+}
+
+.helptext
+{
+	font-size: 8pt;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="bgfx"></div>
+
+<div class="page view">
+    <div class="origin view">
+        <div id="camera" class="camera view"></div>
+    </div>
+</div>
+
+<div id="caption" class="caption">
+	<span id="sort_options">
+		Sort: <button onclick="snowstack_sort('date')">Date</button> <button onclick="snowstack_sort('author')">Speaker</button>
+	</span>
+	<span id="find_options">
+		Find: <input id="find" type="search">
+	</span>
+	snow stack / webkit css visual effects demo &mdash; arrow keys to move, space toggles magnify, enter to play
+</div>
+
+<script type="text/javascript" src="snowstack.js"></script>
+<script type="text/javascript" src="snowstack-youtube.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript">
+
+var page = 1;
+
+/////////////////////////
+// Flickr Example
+
+function flickr(callback)
+{
+    var url = "http://api.flickr.com/services/rest/?method=flickr.interestingness.getList&api_key=60746a125b4a901f2dbb6fc902d9a716&per_page=21&extras=url_o,url_m,url_s,owner_name&page=" + page + "&format=json&jsoncallback=?";
+    
+	jQuery.getJSON(url, function(data) 
+	{
+        var images = jQuery.map(data.photos.photo, function (item)
+        {
+            /* return item.url_s; */
+            return {
+                title: item.ownername + " / " + item.title,
+            	thumb: item.url_s,
+            	zoom: 'http://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + item.id + '_' + item.secret + '.jpg',
+            	link: 'http://www.flickr.com/photos/' + item.owner + '/' + item.id
+            };
+        });
+
+        callback(images);
+        page = page + 1;
+    });
+}
+
+/////////////////////////
+// Simple page parsing example
+
+function init_pageimages(options)
+{
+	var imgs = document.querySelectorAll("a>img");
+	var images = [];
+
+	for (var i = 0; i < imgs.length; i++)
+	{
+		var img = imgs[i];
+		var title = img.alt || img.title || img.parentNode.title;
+		var thumb = img.src;
+		var link = img.parentNode.href;
+		var zoom = img.src;
+		
+		images.push({ title: title, thumb: thumb, link: link, zoom: zoom });
+	}
+
+	snowstack_init(images, options);
+}
+
+/////////////////////////
+// Youtube Example (alpha)
+
+var startIndex = 1;
+
+function youtube(callback)
+{
+	var url = "http://gdata.youtube.com/feeds/api/videos/-/Comedy?v=2&alt=json-in-script&start-index=" + startIndex + "&callback=?";
+
+	jQuery.getJSON(url, function (data)
+	{
+		var images = jQuery.map(data.feed.entry, function (item)
+		{
+			return {
+				title: item.title.$t,
+				thumb: item.media$group.media$thumbnail[0].url,
+				ytvideoid: item.media$group.yt$videoid.$t,
+				videoloader: youtubevideo,
+				link: item.link[0].href
+			};
+		});
+		startIndex += images.length;
+		callback(images);
+	});
+}
+
+//////////////////////////
+// HTML5 Video example (alpha)
+
+function image_pager(array, num, options)
+{
+	var offset = 0;
+	function someimages(callback)
+	{
+    	var end = Math.min(offset + num, array.length);
+    	var videos = array.slice(offset, end);
+    	callback(videos);
+    	offset = end;
+	}
+	
+	snowstack_init(someimages, options);
+}
+
+function init_tedtalks()
+{
+    jQuery.getJSON("tedtalks.txt", function (data)
+    {
+    	var videos = jQuery.map(data, function (info)
+    	{
+    		info.video = info.video_low;
+    		return info;
+    	});
+    	
+    	image_pager(videos, 25, { captions: true, rows: 5 });
+    });
+}
+
+function init_trailers()
+{
+	jQuery.getJSON("appletrailers.txt", function (data)
+	{
+		image_pager(data, 18, { captions: true, rows: 3 });
+	});
+}
+
+function init_find()
+{
+	var field = jQuery("#find");
+	field.focus(snowstack_startsearch).blur(snowstack_endsearch);
+	
+	var searcher = function ()
+	{
+		console.log("searcher called");
+		snowstack_search('title', field.val());
+	}
+
+	field[0].addEventListener("input", searcher, false);
+	field[0].addEventListener("search", searcher, false);
+}
+
+jQuery(window).load(function ()
+{
+	var demo = "ted";
+	var m = document.location.href.match(/demo=(\w+)/);
+	if (m != null)
+	{
+		demo = m[1];
+	}
+	
+	init_find();
+	
+	var demos = {
+		flickr: function () 
+		{
+			jQuery("#sort_options").hide();
+			jQuery("#find_options").hide();
+			snowstack_init(flickr, { captions: false }); 
+		},
+		ted: function ()
+		{
+			init_tedtalks();
+		},
+		trailers: function ()
+		{
+			jQuery("#sort_options").hide();
+			init_trailers();
+		}
+	}
+
+	demos[demo]();
+//  init_pageimages();
+});
+
+</script>
+
+<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript">
+	try {
+	var pageTracker = _gat._getTracker("UA-69710-1");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</body>
+
+</html>
