@@ -11,19 +11,19 @@
 			
 			<!-- FlashCanvas for older IE -->
 			<!--[if lt IE 9]>
-			<script type="text/javascript" src="papercraft/libs/flashcanvas.js"></script>
+			<script type="text/javascript" src="javascripts/papercraft/libs/flashcanvas.js"></script>
 			<![endif]-->
 			
 			<script type="text/javascript" src="javascripts/require.js"></script>
 			
       <!-- Load the supporting libraries -->
-      <script type="text/javascript" src="papercraft/libs/base.js"></script>
-      <script type="text/javascript" src="papercraft/libs/jquery.js"></script>
-      <script type="text/javascript" src="papercraft/libs/jquery.ext.engine.js"></script>
-      <script type="text/javascript" src="papercraft/libs/sylvester.js"></script>
+      <script type="text/javascript" src="javascripts/papercraft/libs/base.js"></script>
+      <script type="text/javascript" src="javascripts/papercraft/libs/jquery.js"></script>
+      <script type="text/javascript" src="javascripts/papercraft/libs/jquery.ext.engine.js"></script>
+      <script type="text/javascript" src="javascripts/papercraft/libs/sylvester.js"></script>
 
       <!-- Load the main engine script -->
-      <script type="text/javascript" src="papercraft/engine/runtime/engine.js"></script>
+      <script type="text/javascript" src="javascripts/papercraft/engine/runtime/engine.js"></script>
 
    </head>
    <body>
@@ -35,11 +35,11 @@
 			
 		</div>
        <script type="text/javascript">
-				var pathToEngine = "/papercraft";
-				var pathWithoutSlash = "papercraft";
+				var pathToEngine = "/javascripts/papercraft";
+				var pathWithoutSlash = "javascripts/papercraft";
        	$(document).ready(function() {
 	         // Load the game's script
-	         Engine.loadGame('papercraft/papercraft/Papercraft.js','Papercraft','Papercraft');
+	         Engine.loadGame('javascripts/papercraft/papercraft/Papercraft.js','Papercraft','Papercraft');
 				});
       </script>
    </body>
