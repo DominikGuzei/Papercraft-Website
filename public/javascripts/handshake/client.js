@@ -42,7 +42,6 @@ require({ baseUrl: "/javascripts/handshake" }, ['handshake/Client'], function(Cl
 					playerImages.push(playerTypes[i].image);
 				}
 				zflow(playerImages, "#tray");
-				onCoverFlowPlayerClicked(1);
 			});
 	
 			client.connect();
