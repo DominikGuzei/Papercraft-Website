@@ -1,0 +1,9 @@
+{
+	// Platform sprites
+  "bitmapImage": "platform.png",
+  "bitmapSize": [99,45],
+	"version": 2,
+  "sprites": {
+     "normal": [0, 0, 99, 45]
+  }
+}

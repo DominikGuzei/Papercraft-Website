@@ -1,0 +1,10 @@
+{
+	// Players sprites
+  "bitmapImage": "players.png",
+  "bitmapSize": [80,40],
+	"version": 2,
+  "sprites": {
+     "Robin": [0, 0, 40, 40],
+		 "Robine": [40, 0, 40, 40] 
+  }
+}
