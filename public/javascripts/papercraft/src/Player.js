@@ -101,7 +101,7 @@ Engine.initObject("Player", "GameObject", function() {
 		
 		setupPlayerStatus: function() {
 			var elem = '<div class="playerStatus">';
-			elem += '<img class="playerImage" src="'+ pathToEngine + '/papercraft/resources/' + this.playerType + '.png" />';
+			elem += '<img class="playerImage" src="'+ pathToEngine + '/src/resources/' + this.playerType + '.png" />';
 			elem += '<p class="name">' + this.playerName + '</p>';
 			elem += '<p class="points">0</p></div>';
 			this.statusElement = $(elem);
